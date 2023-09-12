@@ -1,0 +1,111 @@
+---
+import Layout from "../layouts/Layout.astro";
+type PaceType = {
+    kph: string;
+    mph: string;
+    minsPerKm: string;
+    minsPerMile: string;
+    fiveK: string;
+    tenK: string;
+    halfMarathon: string;
+    marathon: string;
+};
+const kmToMile = 0.621371;
+const marathonK = 42.195;
+const halfMarathonK = 21.0975;
+const generateData = (startPace: number, endPace: number) => {
+    const items: PaceType[] = [];
+    while (startPace < endPace) {
+        const mpk = 60 / startPace;
+        const fiveK = mpk * 5;
+        const tenK = mpk * 10;
+        const halfMarathon = mpk * halfMarathonK;
+        const marathon = mpk * marathonK;
+
+        items.push({
+            kph: formatNumber(startPace),
+            mph: formatNumber(startPace * kmToMile),
+            minsPerKm: formatNumber(mpk),
+            minsPerMile: formatNumber(mpk * kmToMile),
+            fiveK: minToTime(fiveK),
+            tenK: minToTime(tenK),
+            halfMarathon: minToTime(halfMarathon),
+            marathon: minToTime(marathon),
+        });
+        startPace = Math.round((startPace + 0.1) * 10) / 10;
+    }
+    return items;
+};
+const minToTime = (mins: number) => {
+    const hours = Math.floor(mins / 60);
+    const minutes = Math.floor(mins % 60);
+
+    const seconds = Math.floor((mins * 60) % 60);
+    let hourStr = hours.toString();
+    let minStr = minutes.toString();
+    let secStr = seconds.toString();
+    if (hours < 10) hourStr = `0${hourStr}`;
+    if (minutes < 10) minStr = `0${minStr}`;
+    if (seconds < 10) secStr = `0${secStr}`;
+    return `${hourStr}:${minStr}:${secStr}`;
+};
+const formatNumber = (num: number) => {
+    return num.toFixed(2);
+};
+const data = generateData(7, 21);
+---
+
+<Layout title="Race-Pace Cheatsheet">
+    <main class="dark:bg-slate-800 dark:text-white">
+        <div class="overflow-x-auto overflow-y-hidden">
+            <div class="max-h-screen overflow-y-scroll">
+                <table
+                    class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+                >
+                    <thead
+                        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0"
+                    >
+                        <tr>
+                            <th scope="col" class="px-6 py-3">KM PER HOUR</th>
+                            <th scope="col" class="px-6 py-3">MILES PER HOUR</th
+                            >
+                            <th scope="col" class="px-6 py-3">MINS PER KM</th>
+                            <th scope="col" class="px-6 py-3">MINS PER MILE</th>
+                            <th scope="col" class="px-6 py-3">5K</th>
+                            <th scope="col" class="px-6 py-3">10K</th>
+                            <th scope="col" class="px-6 py-3">HALF MARATHON</th>
+                            <th scope="col" class="px-6 py-3">MARATHON</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            data.map((item) => (
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <th
+                                        scope="row"
+                                        class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                                    >
+                                        {item.kph}kph{" "}
+                                    </th>
+                                    <td class="px-6 py-4">{item.mph}mph</td>
+                                    <td class="px-6 py-4"> {item.minsPerKm}</td>
+                                    <td class="px-6 py-4">
+                                        {" "}
+                                        {item.minsPerMile}
+                                    </td>
+                                    <td class="px-6 py-4"> {item.fiveK}</td>
+                                    <td class="px-6 py-4"> {item.tenK}</td>
+                                    <td class="px-6 py-4">
+                                        {" "}
+                                        {item.halfMarathon}
+                                    </td>
+                                    <td class="px-6 py-4"> {item.marathon}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</Layout>
