@@ -1,5 +1,5 @@
 export const constants = {
-  kmToMile: 0.621371,
+  kmInMile: 0.621371,
   marathonK: 42.195,
   halfMarathonK: 21.0975,
 };

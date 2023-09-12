@@ -26,7 +26,7 @@ const generateData = (startPace: number, endPace: number) => {
             kph: formatNumber(startPace),
             mph: formatNumber(startPace * constants.kmToMile),
             minsPerKm: formatNumber(mpk),
-            minsPerMile: formatNumber(mpk * constants.kmToMile),
+            minsPerMile: formatNumber(mpk / constants.kmInMile),
             fiveK: minToTime(fiveK),
             tenK: minToTime(tenK),
             halfMarathon: minToTime(halfMarathon),
