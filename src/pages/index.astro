@@ -24,7 +24,7 @@ const generateData = (startPace: number, endPace: number) => {
 
         items.push({
             kph: formatNumber(startPace),
-            mph: formatNumber(startPace * constants.kmToMile),
+            mph: formatNumber(startPace * constants.kmInMile),
             minsPerKm: formatNumber(mpk),
             minsPerMile: formatNumber(mpk / constants.kmInMile),
             fiveK: minToTime(fiveK),
