@@ -35,7 +35,7 @@ export default function Calculator() {
     <>
       <button
         onClick={() => setOpen(!open())}
-        class="absolute bottom-3 left-3 z-[1000] rounded-full border border-gray-500 bg-gray-500 p-2 dark:bg-white "
+        class="absolute bottom-3 left-3 z-[1000] rounded-full border border-gray-500 bg-green-600 p-2 text-white dark:bg-white dark:text-green-600"
       >
         {open() ? (
           <svg
