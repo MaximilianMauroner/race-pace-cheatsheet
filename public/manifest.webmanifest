@@ -1,0 +1,22 @@
+{
+  "name": "Race Pace Cheatsheet",
+  "short_name": "RacePace",
+  "description": "A basic site for you to get running lengths and their respective times for each speed,",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#111827",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./logo96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "./logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}
