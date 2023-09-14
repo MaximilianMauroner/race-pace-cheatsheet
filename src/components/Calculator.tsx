@@ -2,17 +2,22 @@ import { createSignal } from "solid-js";
 import { minToTime, constants } from "../constants";
 
 export default function Calculator() {
-  const speeds = ["KPH", "MPH"] as const;
+  const speeds = [
+    "KPH",
+    "MPH",
+    "FIVEK",
+    "TENK",
+    "HALFMARATHON",
+    "MARATHON",
+  ] as const;
   type speedType = (typeof speeds)[number];
-  const [open, setOpen] = createSignal(false);
+  const [open, setOpen] = createSignal(true);
   const [kph, setKph] = createSignal(0);
   const [mph, setMph] = createSignal(0);
-  const [minutesPerKm, setMinutesPerKm] = createSignal(0);
-  const [minutesPerMile, setMinutesPerMile] = createSignal(0);
-  const [fiveK, setFiveK] = createSignal(0);
-  const [tenK, setTenK] = createSignal(0);
-  const [halfMarathon, setHalfMarathon] = createSignal(0);
-  const [fullMarathon, setFullMarathon] = createSignal(0);
+  const [fiveK, setFiveK] = createSignal("00:00:00");
+  const [tenK, setTenK] = createSignal("00:00:00");
+  const [halfMarathon, setHalfMarathon] = createSignal("00:00:00");
+  const [fullMarathon, setFullMarathon] = createSignal("00:00:00");
 
   const handleInputChange = (value: number, type: speedType) => {
     if (isNaN(value) || value == 0) {
@@ -26,10 +31,40 @@ export default function Calculator() {
       setKph(Math.floor((value / constants.kmInMile) * 100) / 100);
     }
     const mpk = 60 / kph();
-    setFiveK(mpk * 5);
-    setTenK(mpk * 10);
-    setHalfMarathon(mpk * constants.halfMarathonK);
-    setFullMarathon(mpk * constants.marathonK);
+    setFiveK(convertMinToTime(mpk * 5));
+    setTenK(convertMinToTime(mpk * 10));
+    setHalfMarathon(convertMinToTime(mpk * constants.halfMarathonK));
+    setFullMarathon(convertMinToTime(mpk * constants.marathonK));
+  };
+  const handleTimeChange = (value: string, type: speedType) => {
+    const [hours, minutes, seconds] = value.split(":");
+    const totalMinutes = +hours * 60 + +minutes;
+
+    let kms = 0;
+    switch (type) {
+      case "FIVEK":
+        kms = 5;
+        break;
+      case "TENK":
+        kms = 10;
+        break;
+      case "HALFMARATHON":
+        kms = constants.halfMarathonK;
+        break;
+      case "MARATHON":
+        kms = constants.marathonK;
+        break;
+    }
+
+    const kmPerHour = kms / (totalMinutes / 60);
+    handleInputChange(kmPerHour, "KPH");
+  };
+
+  const convertMinToTime = (value: number) => {
+    if (value > 24 * 60) {
+      return "23:59:59";
+    }
+    return minToTime(value);
   };
   return (
     <>
@@ -42,13 +77,13 @@ export default function Calculator() {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={1.5}
+            stroke-width={1.5}
             stroke="currentColor"
-            className="h-10 w-10"
+            class="h-10 w-10"
           >
             <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
+              stroke-linecap="round"
+              stroke-linejoin="round"
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
@@ -151,21 +186,81 @@ export default function Calculator() {
                     </div>
                   </div>
                   <div class="flex flex-col rounded-b border-t border-gray-200 p-6 dark:border-gray-600">
-                    <div class="flex justify-between">
-                      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {`5K: ${minToTime(fiveK())}`}
-                      </p>
-                      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {`10K: ${minToTime(tenK())}`}
-                      </p>
+                    <div>
+                      <label
+                        for="fivek"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        5K
+                      </label>
+                      <input
+                        type="time"
+                        id="fivek"
+                        min={0}
+                        value={fiveK()}
+                        onInput={(e) =>
+                          handleTimeChange(e.target.value, "FIVEK")
+                        }
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        required
+                      />
                     </div>
-                    <div class="flex justify-between">
-                      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {`Half-Marathon: ${minToTime(halfMarathon())}`}
-                      </p>
-                      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                        {`Marathon: ${minToTime(fullMarathon())}`}
-                      </p>
+                    <div>
+                      <label
+                        for="tenk"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        10K
+                      </label>
+                      <input
+                        type="time"
+                        id="tenk"
+                        min={0}
+                        value={tenK()}
+                        onInput={(e) =>
+                          handleTimeChange(e.target.value, "TENK")
+                        }
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="halfmartahon"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        HALF MARATHON
+                      </label>
+                      <input
+                        type="time"
+                        id="halfmartahon"
+                        min={0}
+                        value={halfMarathon()}
+                        onInput={(e) =>
+                          handleTimeChange(e.target.value, "HALFMARATHON")
+                        }
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        for="martahon"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        MARATHON
+                      </label>
+                      <input
+                        type="time"
+                        id="martahon"
+                        min={0}
+                        value={fullMarathon()}
+                        onInput={(e) =>
+                          handleTimeChange(e.target.value, "MARATHON")
+                        }
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                        required
+                      />
                     </div>
                   </div>
                 </div>
