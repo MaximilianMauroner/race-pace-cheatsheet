@@ -11,7 +11,7 @@ export default function Calculator() {
     "MARATHON",
   ] as const;
   type speedType = (typeof speeds)[number];
-  const [open, setOpen] = createSignal(true);
+  const [open, setOpen] = createSignal(false);
   const [kph, setKph] = createSignal(0);
   const [mph, setMph] = createSignal(0);
   const [fiveK, setFiveK] = createSignal("00:00:00");

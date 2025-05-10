@@ -17,6 +17,13 @@ export const minToTime = (mins: number) => {
   if (seconds < 10) secStr = `0${secStr}`;
   return `${hourStr}:${minStr}:${secStr}`;
 };
-export const formatNumber = (num: number) => {
+export const formatNumber = (num: number, isTime = false) => {
+  if (isTime) {
+    const minutes = Math.floor(num);
+    const seconds = Math.round((num % 1) * 60);
+    const minStr = minutes < 10 ? `0${minutes}` : minutes.toString();
+    const secStr = seconds < 10 ? `0${seconds}` : seconds.toString();
+    return `${minStr}:${secStr}`;
+  }
   return num.toFixed(2);
 };
